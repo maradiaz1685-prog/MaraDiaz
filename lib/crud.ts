@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { randomUUID } from "crypto";
-import { readData, writeData } from "./data";
+import { supabaseAdmin } from "./supabaseAdmin";
+import { toCamelCase, toSnakeCase } from "./case";
 
-type Entity = { id: string };
-
-export function createCrudHandlers<T extends Entity>(file: string) {
+export function createCrudHandlers(table: string) {
   async function GET() {
-    const items = await readData<T[]>(file);
-    return NextResponse.json(items);
+    const { data, error } = await supabaseAdmin.from(table).select("*");
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json((data ?? []).map((row) => toCamelCase(row)));
   }
 
   async function POST(req: NextRequest) {
     const body = await req.json();
-    const items = await readData<T[]>(file);
-    const newItem = { ...body, id: randomUUID() } as T;
-    items.push(newItem);
-    await writeData(file, items);
-    return NextResponse.json(newItem, { status: 201 });
+    const { id: _ignored, ...rest } = body;
+    const { data, error } = await supabaseAdmin
+      .from(table)
+      .insert(toSnakeCase(rest))
+      .select()
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(toCamelCase(data), { status: 201 });
   }
 
   async function PUT(req: NextRequest) {
@@ -24,21 +26,21 @@ export function createCrudHandlers<T extends Entity>(file: string) {
     if (!body.id) {
       return NextResponse.json({ error: "Falta id" }, { status: 400 });
     }
-    const items = await readData<T[]>(file);
-    const idx = items.findIndex((item) => item.id === body.id);
-    if (idx === -1) {
-      return NextResponse.json({ error: "No encontrado" }, { status: 404 });
-    }
-    items[idx] = { ...items[idx], ...body };
-    await writeData(file, items);
-    return NextResponse.json(items[idx]);
+    const { id, ...rest } = body;
+    const { data, error } = await supabaseAdmin
+      .from(table)
+      .update(toSnakeCase(rest))
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(toCamelCase(data));
   }
 
   async function DELETE(req: NextRequest) {
     const { id } = await req.json();
-    const items = await readData<T[]>(file);
-    const filtered = items.filter((item) => item.id !== id);
-    await writeData(file, filtered);
+    const { error } = await supabaseAdmin.from(table).delete().eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });
   }
 

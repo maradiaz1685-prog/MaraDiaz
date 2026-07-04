@@ -1,13 +1,9 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import { readData } from "@/lib/data";
-import type { Settings, DaySchedule } from "@/lib/types";
+import { getSettings, getSchedule } from "@/lib/db";
 
 export default async function Footer() {
-  const [settings, schedule] = await Promise.all([
-    readData<Settings>("settings.json"),
-    readData<DaySchedule[]>("schedule.json"),
-  ]);
+  const [settings, schedule] = await Promise.all([getSettings(), getSchedule()]);
 
   return (
     <footer id="contacto" className="bg-ink text-white/80 mt-20">

@@ -1,13 +1,9 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import { readData } from "@/lib/data";
-import type { Settings, Employee } from "@/lib/types";
+import { getSettings, getEmployees } from "@/lib/db";
 
 export default async function HomePage() {
-  const [settings, employees] = await Promise.all([
-    readData<Settings>("settings.json"),
-    readData<Employee[]>("employees.json"),
-  ]);
+  const [settings, employees] = await Promise.all([getSettings(), getEmployees()]);
 
   const areas = [
     {

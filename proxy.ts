@@ -1,25 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-const COOKIE_NAME = "md_admin_session";
+const PROTECTED_API_PREFIXES = [
+  "/api/services",
+  "/api/courses",
+  "/api/products",
+  "/api/employees",
+  "/api/settings",
+  "/api/schedule",
+];
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname === "/admin/login") {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/admin")) {
-    const session = req.cookies.get(COOKIE_NAME);
-    if (!session) {
-      const loginUrl = new URL("/admin/login", req.url);
-      return NextResponse.redirect(loginUrl);
+  const isProtectedApi = PROTECTED_API_PREFIXES.some((p) => pathname.startsWith(p));
+  const isAdminPage = pathname.startsWith("/admin");
+
+  if (isProtectedApi || isAdminPage) {
+    const { response, user } = await updateSession(req);
+
+    if (!user) {
+      if (isProtectedApi) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+      }
+      return NextResponse.redirect(new URL("/admin/login", req.url));
     }
+
+    return response;
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/services/:path*",
+    "/api/courses/:path*",
+    "/api/products/:path*",
+    "/api/employees/:path*",
+    "/api/settings/:path*",
+    "/api/schedule/:path*",
+  ],
 };

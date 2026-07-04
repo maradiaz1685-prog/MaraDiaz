@@ -1,5 +1,5 @@
-import { readData } from "@/lib/data";
-import { formatPrice, type Course, type CourseType } from "@/lib/types";
+import { getCourses } from "@/lib/db";
+import { formatPrice, type CourseType } from "@/lib/types";
 
 export const metadata = { title: "Escuela Profesional | Mara Diaz" };
 
@@ -12,7 +12,7 @@ const typeLabels: Record<CourseType, string> = {
 const typeOrder: CourseType[] = ["curso", "taller", "capacitacion"];
 
 export default async function EscuelaPage() {
-  const courses = (await readData<Course[]>("courses.json")).filter((c) => c.active);
+  const courses = (await getCourses()).filter((c) => c.active);
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16">

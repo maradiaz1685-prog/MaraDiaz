@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readData, writeData } from "@/lib/data";
-
-type Settings = {
-  ownerName: string;
-  bio: string;
-  phone: string;
-  whatsapp: string;
-  instagram: string;
-  facebook: string;
-  address: string;
-};
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { toCamelCase, toSnakeCase } from "@/lib/case";
 
 export async function GET() {
-  const settings = await readData<Settings>("settings.json");
-  return NextResponse.json(settings);
+  const { data, error } = await supabaseAdmin.from("settings").select("*").eq("id", 1).single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(toCamelCase(data));
 }
 
 export async function PUT(req: NextRequest) {
-  const body = (await req.json()) as Settings;
-  await writeData("settings.json", body);
-  return NextResponse.json(body);
+  const body = await req.json();
+  const { data, error } = await supabaseAdmin
+    .from("settings")
+    .update(toSnakeCase(body))
+    .eq("id", 1)
+    .select()
+    .single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(toCamelCase(data));
 }

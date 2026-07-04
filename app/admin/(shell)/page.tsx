@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { readData } from "@/lib/data";
-import type { Service, Course, Product, Employee } from "@/lib/types";
+import { getServices, getCourses, getProducts, getEmployees } from "@/lib/db";
 
 export default async function AdminDashboard() {
   const [services, courses, products, employees] = await Promise.all([
-    readData<Service[]>("services.json"),
-    readData<Course[]>("courses.json"),
-    readData<Product[]>("products.json"),
-    readData<Employee[]>("employees.json"),
+    getServices(),
+    getCourses(),
+    getProducts(),
+    getEmployees(),
   ]);
 
   const cards = [

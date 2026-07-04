@@ -1,3 +1,3 @@
 import { createCrudHandlers } from "@/lib/crud";
 
-export const { GET, POST, PUT, DELETE } = createCrudHandlers("products.json");
+export const { GET, POST, PUT, DELETE } = createCrudHandlers("products");

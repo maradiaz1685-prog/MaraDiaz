@@ -1,10 +1,10 @@
-import { readData } from "@/lib/data";
-import { formatPrice, type Product } from "@/lib/types";
+import { getProducts } from "@/lib/db";
+import { formatPrice } from "@/lib/types";
 
 export const metadata = { title: "Multidistribuidora | Mara Diaz" };
 
 export default async function MultidistribuidoraPage() {
-  const products = (await readData<Product[]>("products.json")).filter((p) => p.active);
+  const products = (await getProducts()).filter((p) => p.active);
   const categories = Array.from(new Set(products.map((p) => p.category)));
 
   return (

@@ -1,11 +1,10 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
-import { readData } from "@/lib/data";
-import type { Settings } from "@/lib/types";
+import { getSettings } from "@/lib/db";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const settings = await readData<Settings>("settings.json");
+  const settings = await getSettings();
 
   return (
     <>

@@ -1,10 +1,10 @@
-import { readData } from "@/lib/data";
-import { formatPrice, type Service } from "@/lib/types";
+import { getServices } from "@/lib/db";
+import { formatPrice } from "@/lib/types";
 
 export const metadata = { title: "Servicios | Mara Diaz" };
 
 export default async function ServiciosPage() {
-  const services = (await readData<Service[]>("services.json")).filter((s) => s.active);
+  const services = (await getServices()).filter((s) => s.active);
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
