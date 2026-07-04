@@ -1,0 +1,90 @@
+[
+  {
+    "id": "crs-1",
+    "name": "Curso de Maquillaje Profesional",
+    "type": "curso",
+    "modality": "Presencial",
+    "duration": "3 meses",
+    "price": 45000,
+    "startDate": "2026-08-03",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-2",
+    "name": "Capacitación en Cosmetología",
+    "type": "capacitacion",
+    "modality": "Presencial e intensivo",
+    "duration": "6 meses",
+    "price": 80000,
+    "startDate": "2026-09-01",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-3",
+    "name": "Curso de Cosmiatría",
+    "type": "curso",
+    "modality": "Presencial",
+    "duration": "4 meses",
+    "price": 65000,
+    "startDate": "2026-08-17",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-4",
+    "name": "Taller de Extensión de Pestañas",
+    "type": "taller",
+    "modality": "Presencial",
+    "duration": "1 día",
+    "price": 20000,
+    "startDate": "2026-07-20",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-5",
+    "name": "Taller de Diseño y Laminado de Cejas",
+    "type": "taller",
+    "modality": "Presencial",
+    "duration": "1 día",
+    "price": 18000,
+    "startDate": "2026-07-27",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-6",
+    "name": "Curso de Manicuría y Esmaltado Semipermanente",
+    "type": "curso",
+    "modality": "Presencial",
+    "duration": "2 meses",
+    "price": 38000,
+    "startDate": "2026-08-10",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-7",
+    "name": "Capacitación en Depilación Definitiva",
+    "type": "capacitacion",
+    "modality": "Presencial",
+    "duration": "1 mes",
+    "price": 40000,
+    "startDate": "2026-09-14",
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "crs-8",
+    "name": "Taller de Automaquillaje",
+    "type": "taller",
+    "modality": "Presencial",
+    "duration": "1 día",
+    "price": 12000,
+    "startDate": "2026-08-08",
+    "imageUrl": "",
+    "active": true
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "svc-1",
+    "name": "Limpieza facial profunda",
+    "description": "Higiene facial con extracción, exfoliación e hidratación adaptada a cada tipo de piel.",
+    "price": 15000,
+    "durationMin": 60,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-2",
+    "name": "Depilación facial",
+    "description": "Depilación con cera o hilo, incluye diseño de cejas.",
+    "price": 6000,
+    "durationMin": 30,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-3",
+    "name": "Diseño y laminado de cejas",
+    "description": "Diseño personalizado con laminado para un efecto duradero y prolijo.",
+    "price": 9000,
+    "durationMin": 45,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-4",
+    "name": "Extensión de pestañas pelo a pelo",
+    "description": "Aplicación una a una para un efecto natural, con mantenimiento a los 21 días.",
+    "price": 22000,
+    "durationMin": 90,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-5",
+    "name": "Lifting de pestañas",
+    "description": "Curvatura y realce del pestañeo natural sin necesidad de extensiones.",
+    "price": 12000,
+    "durationMin": 50,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-6",
+    "name": "Peeling químico facial",
+    "description": "Renovación celular para manchas, acné y textura de la piel.",
+    "price": 18000,
+    "durationMin": 45,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-7",
+    "name": "Masaje descontracturante",
+    "description": "Masaje corporal para aliviar tensión muscular y mejorar la circulación.",
+    "price": 16000,
+    "durationMin": 60,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-8",
+    "name": "Manicuría y esmaltado semipermanente",
+    "description": "Cuidado de manos con esmaltado semipermanente de larga duración.",
+    "price": 10000,
+    "durationMin": 60,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "svc-9",
+    "name": "Depilación definitiva (sesión)",
+    "description": "Tratamiento de depilación definitiva por zona, con equipamiento profesional.",
+    "price": 14000,
+    "durationMin": 30,
+    "imageUrl": "",
+    "active": true
+  }
+]

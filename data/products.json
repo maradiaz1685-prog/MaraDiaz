@@ -1,0 +1,112 @@
+[
+  {
+    "id": "prd-1",
+    "name": "Kit de Cosméticos Premium",
+    "description": "Set completo para maquillaje profesional: base, corrector, rubor y polvos.",
+    "price": 32000,
+    "category": "Maquillaje",
+    "stock": 10,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-2",
+    "name": "Paleta de sombras profesional",
+    "description": "18 tonos mate y shimmer de alta pigmentación.",
+    "price": 21000,
+    "category": "Maquillaje",
+    "stock": 14,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-3",
+    "name": "Crema hidratante facial",
+    "description": "Hidratación profunda para todo tipo de piel, uso diario.",
+    "price": 8500,
+    "category": "Skincare",
+    "stock": 25,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-4",
+    "name": "Sérum de ácido hialurónico",
+    "description": "Hidratación intensiva y efecto antiedad.",
+    "price": 13500,
+    "category": "Skincare",
+    "stock": 18,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-5",
+    "name": "Protector solar facial FPS 50",
+    "description": "Protección diaria con base libre de aceites.",
+    "price": 11000,
+    "category": "Skincare",
+    "stock": 20,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-6",
+    "name": "Set de pinceles profesionales",
+    "description": "12 pinceles de alta calidad para maquillaje profesional.",
+    "price": 18000,
+    "category": "Accesorios",
+    "stock": 15,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-7",
+    "name": "Esponjas de maquillaje (pack x3)",
+    "description": "Esponjas blending para base y corrector.",
+    "price": 4500,
+    "category": "Accesorios",
+    "stock": 30,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-8",
+    "name": "Esmalte semipermanente",
+    "description": "Larga duración, gran variedad de colores.",
+    "price": 6500,
+    "category": "Uñas",
+    "stock": 40,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-9",
+    "name": "Kit de manicuría profesional",
+    "description": "Herramientas completas para manicuría y pedicuría.",
+    "price": 24000,
+    "category": "Uñas",
+    "stock": 8,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-10",
+    "name": "Aceite capilar reparador",
+    "description": "Nutrición e hidratación para puntas resecas.",
+    "price": 9500,
+    "category": "Cabello",
+    "stock": 22,
+    "imageUrl": "",
+    "active": true
+  },
+  {
+    "id": "prd-11",
+    "name": "Plancha de pestañas eléctrica",
+    "description": "Curvatura profesional sin necesidad de rulero.",
+    "price": 15500,
+    "category": "Accesorios",
+    "stock": 12,
+    "imageUrl": "",
+    "active": true
+  }
+]
