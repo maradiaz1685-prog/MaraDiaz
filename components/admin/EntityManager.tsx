@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type FieldType = "text" | "textarea" | "number" | "date" | "checkbox" | "select";
+export type FieldType = "text" | "textarea" | "number" | "date" | "checkbox" | "select" | "image";
 
 export type FieldConfig = {
   key: string;
@@ -13,6 +13,66 @@ export type FieldConfig = {
 };
 
 type Item = Record<string, unknown> & { id: string };
+
+function ImageUploadInput({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (url: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload", { method: "POST", body: formData });
+    const data = await res.json().catch(() => ({}));
+
+    setUploading(false);
+    e.target.value = "";
+
+    if (!res.ok) {
+      setError(data.error || "Error al subir la imagen");
+      return;
+    }
+
+    onChange(data.url);
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      {value ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={value} alt="" className="h-14 w-14 rounded-lg object-cover border border-brand-200" />
+      ) : (
+        <div className="h-14 w-14 shrink-0 rounded-lg bg-brand-50 border border-dashed border-brand-200 flex items-center justify-center text-brand-300 text-[10px] text-center px-1">
+          Sin foto
+        </div>
+      )}
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={handleFile}
+          disabled={uploading}
+          className="text-xs text-ink-soft file:mr-3 file:rounded-full file:border-0 file:bg-brand-100 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-brand-700 hover:file:bg-brand-200"
+        />
+        {uploading && <p className="text-xs text-brand-600 mt-1">Subiendo…</p>}
+        {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      </div>
+    </div>
+  );
+}
 
 export default function EntityManager({
   apiPath,
@@ -100,9 +160,14 @@ export default function EntityManager({
           className="mb-8 rounded-2xl border border-brand-200 bg-brand-50/50 p-6 grid gap-4 sm:grid-cols-2"
         >
           {fields.map((f) => (
-            <div key={f.key} className={f.type === "textarea" ? "sm:col-span-2" : ""}>
+            <div key={f.key} className={f.type === "textarea" || f.type === "image" ? "sm:col-span-2" : ""}>
               <label className="block text-xs font-medium text-ink-soft mb-1.5">{f.label}</label>
-              {f.type === "textarea" ? (
+              {f.type === "image" ? (
+                <ImageUploadInput
+                  value={(editing[f.key] as string) ?? ""}
+                  onChange={(url) => updateField(f.key, url)}
+                />
+              ) : f.type === "textarea" ? (
                 <textarea
                   value={(editing[f.key] as string) ?? ""}
                   onChange={(e) => updateField(f.key, e.target.value)}

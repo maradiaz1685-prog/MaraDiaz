@@ -11,7 +11,7 @@ export default function AdminEmpleadosPage() {
         { key: "name", label: "Nombre", type: "text" },
         { key: "role", label: "Cargo", type: "text" },
         { key: "bio", label: "Descripción", type: "textarea", showInTable: false },
-        { key: "photoUrl", label: "URL de foto", type: "text", showInTable: false },
+        { key: "photoUrl", label: "Foto", type: "image", showInTable: false },
       ]}
       emptyItem={{ name: "", role: "", bio: "", photoUrl: "" }}
     />

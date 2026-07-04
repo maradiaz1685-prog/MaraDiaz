@@ -13,7 +13,7 @@ export default function AdminProductosPage() {
         { key: "category", label: "Categoría", type: "text" },
         { key: "price", label: "Precio", type: "number" },
         { key: "stock", label: "Stock", type: "number" },
-        { key: "imageUrl", label: "URL de imagen", type: "text", showInTable: false },
+        { key: "imageUrl", label: "Foto", type: "image", showInTable: false },
         { key: "active", label: "Activo", type: "checkbox" },
       ]}
       emptyItem={{

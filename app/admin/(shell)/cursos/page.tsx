@@ -23,7 +23,7 @@ export default function AdminCursosPage() {
         { key: "duration", label: "Duración", type: "text" },
         { key: "price", label: "Precio", type: "number" },
         { key: "startDate", label: "Fecha de inicio", type: "date" },
-        { key: "imageUrl", label: "URL de imagen", type: "text", showInTable: false },
+        { key: "imageUrl", label: "Foto", type: "image", showInTable: false },
         { key: "active", label: "Activo", type: "checkbox" },
       ]}
       emptyItem={{

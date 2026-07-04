@@ -12,7 +12,7 @@ export default function AdminServiciosPage() {
         { key: "description", label: "Descripción", type: "textarea", showInTable: false },
         { key: "price", label: "Precio", type: "number" },
         { key: "durationMin", label: "Duración (min)", type: "number" },
-        { key: "imageUrl", label: "URL de imagen", type: "text", showInTable: false },
+        { key: "imageUrl", label: "Foto", type: "image", showInTable: false },
         { key: "active", label: "Activo", type: "checkbox" },
       ]}
       emptyItem={{

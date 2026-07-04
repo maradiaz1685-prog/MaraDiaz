@@ -8,6 +8,7 @@ const PROTECTED_API_PREFIXES = [
   "/api/employees",
   "/api/settings",
   "/api/schedule",
+  "/api/upload",
 ];
 
 export async function proxy(req: NextRequest) {
@@ -45,5 +46,6 @@ export const config = {
     "/api/employees/:path*",
     "/api/settings/:path*",
     "/api/schedule/:path*",
+    "/api/upload/:path*",
   ],
 };
