@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import { formatPrice, type Service } from "@/lib/types";
-import BookingModal from "./BookingModal";
+import ServiceModal from "./ServiceModal";
 
 export default function ServiceCard({
   service,
   employeeName,
   employeePhone,
+  businessWhatsapp,
 }: {
   service: Service;
   employeeName: string | null;
   employeePhone: string | null;
+  businessWhatsapp: string;
 }) {
-  const [showBooking, setShowBooking] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const bookable = Boolean(service.scheduleStart && service.scheduleEnd && service.slotDurationMin);
 
@@ -43,18 +45,25 @@ export default function ServiceCard({
           <span className="font-semibold text-brand-700">{formatPrice(service.price)}</span>
         </div>
 
-        {bookable && (
-          <button
-            onClick={() => setShowBooking(true)}
-            className="w-full rounded-full bg-brand-600 text-white text-sm font-medium py-2.5 hover:bg-brand-700 transition-colors"
-          >
-            Reservar turno
-          </button>
-        )}
+        <button
+          onClick={() => setShowModal(true)}
+          className="w-full rounded-full bg-brand-600 text-white text-sm font-medium py-2.5 hover:bg-brand-700 transition-colors"
+        >
+          {bookable ? "Consultar y reservar turno" : "Consultar"}
+        </button>
       </div>
 
-      {showBooking && (
-        <BookingModal serviceId={service.id} serviceName={service.name} onClose={() => setShowBooking(false)} />
+      {showModal && (
+        <ServiceModal
+          serviceId={service.id}
+          serviceName={service.name}
+          serviceDescription={service.description}
+          employeeName={employeeName}
+          employeePhone={employeePhone}
+          businessWhatsapp={businessWhatsapp}
+          bookable={bookable}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </article>
   );

@@ -1,10 +1,10 @@
-import { getServices, getEmployees } from "@/lib/db";
+import { getServices, getEmployees, getSettings } from "@/lib/db";
 import ServiceCard from "@/components/ServiceCard";
 
 export const metadata = { title: "Servicios | Mara Diaz" };
 
 export default async function ServiciosPage() {
-  const [allServices, employees] = await Promise.all([getServices(), getEmployees()]);
+  const [allServices, employees, settings] = await Promise.all([getServices(), getEmployees(), getSettings()]);
   const services = allServices.filter((s) => s.active);
 
   return (
@@ -29,6 +29,7 @@ export default async function ServiciosPage() {
                 service={s}
                 employeeName={employee?.name ?? null}
                 employeePhone={employee?.phone ?? null}
+                businessWhatsapp={settings.whatsapp}
               />
             );
           })}
