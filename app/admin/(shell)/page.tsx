@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { getServices, getCourses, getProducts, getEmployees } from "@/lib/db";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export default async function AdminDashboard() {
-  const [services, courses, products, employees] = await Promise.all([
+  const [services, courses, products, employees, pendingResult] = await Promise.all([
     getServices(),
     getCourses(),
     getProducts(),
     getEmployees(),
+    supabaseAdmin.from("registrations").select("id", { count: "exact", head: true }).eq("status", "pendiente"),
   ]);
+
+  const pendingCount = pendingResult.count ?? 0;
 
   const cards = [
     { href: "/admin/servicios", label: "Servicios", count: services.length },
@@ -22,6 +26,18 @@ export default async function AdminDashboard() {
       <p className="text-ink-soft text-sm mb-8">
         Bienvenida, Mara. Desde acá cargás y modificás todo el contenido del sitio.
       </p>
+
+      {pendingCount > 0 && (
+        <Link
+          href="/admin/registros"
+          className="block rounded-2xl border border-red-200 bg-red-50 p-5 mb-8 hover:border-red-300 transition-colors"
+        >
+          <p className="text-sm font-semibold text-red-600">
+            {pendingCount} {pendingCount === 1 ? "persona nueva se registró" : "personas nuevas se registraron"} en el sitio
+          </p>
+          <p className="text-xs text-red-500 mt-0.5">Tocá acá para revisar y decidir si les das un descuento</p>
+        </Link>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         {cards.map((c) => (

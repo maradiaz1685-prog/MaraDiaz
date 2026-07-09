@@ -36,6 +36,14 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link
+              href="/registro"
+              className="rounded-full bg-brand-600 text-white px-4 py-2 text-sm font-medium hover:bg-brand-700 transition-colors"
+            >
+              Registrarme
+            </Link>
+          </li>
         </ul>
 
         <button
@@ -67,6 +75,15 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href="/registro"
+                className="block py-2.5 font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                Registrarme
+              </Link>
+            </li>
           </ul>
         </div>
       )}

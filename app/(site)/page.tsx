@@ -91,6 +91,25 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Registro */}
+      <section className="bg-ink text-white">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold mb-2">Sumate a la comunidad Mara Diaz</h2>
+            <p className="text-white/70 max-w-xl">
+              Registrate con tu nombre y WhatsApp — podés llegar a recibir descuentos exclusivos en servicios,
+              cursos o productos.
+            </p>
+          </div>
+          <Link
+            href="/registro"
+            className="shrink-0 rounded-full bg-brand-500 text-white font-semibold px-7 py-3 text-sm shadow-lg hover:bg-brand-400 transition-colors"
+          >
+            Registrarme
+          </Link>
+        </div>
+      </section>
+
       {/* About */}
       <section className="bg-brand-50/60">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 grid gap-12 md:grid-cols-2 items-center">

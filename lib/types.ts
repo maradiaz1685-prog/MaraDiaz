@@ -76,6 +76,25 @@ export type Product = {
   active: boolean;
 };
 
+export type RegistrationStatus = "pendiente" | "cliente" | "profesional";
+
+export type Registration = {
+  id: string;
+  name: string;
+  phone: string;
+  status: RegistrationStatus;
+  discountPercent: number | null;
+  appliesServicios: boolean;
+  appliesCursos: boolean;
+  appliesProductos: boolean;
+  accessCode: string;
+  createdAt: string;
+};
+
+export function discountedPrice(price: number, percent: number): number {
+  return Math.round(price * (1 - percent / 100));
+}
+
 export function formatPrice(price: number): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import LogoutButton from "@/components/admin/LogoutButton";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,7 @@ const navItems = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/servicios", label: "Servicios" },
   { href: "/admin/turnos", label: "Turnos" },
+  { href: "/admin/registros", label: "Registros" },
   { href: "/admin/cursos", label: "Escuela Profesional" },
   { href: "/admin/productos", label: "Multidistribuidora" },
   { href: "/admin/empleados", label: "Empleados" },
@@ -15,7 +17,12 @@ const navItems = [
   { href: "/admin/configuracion", label: "Configuración" },
 ];
 
-export default function AdminShellLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminShellLayout({ children }: { children: React.ReactNode }) {
+  const { count: pendingCount } = await supabaseAdmin
+    .from("registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pendiente");
+
   return (
     <div className="min-h-screen flex bg-brand-50/30">
       <aside className="w-64 shrink-0 bg-white border-r border-brand-100 flex flex-col">
@@ -31,9 +38,14 @@ export default function AdminShellLayout({ children }: { children: React.ReactNo
             <Link
               key={item.href}
               href={item.href}
-              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink-soft hover:bg-brand-50 hover:text-brand-700 transition-colors"
+              className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-ink-soft hover:bg-brand-50 hover:text-brand-700 transition-colors"
             >
               {item.label}
+              {item.href === "/admin/registros" && Boolean(pendingCount) && (
+                <span className="rounded-full bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 leading-none">
+                  {pendingCount}
+                </span>
+              )}
             </Link>
           ))}
         </nav>

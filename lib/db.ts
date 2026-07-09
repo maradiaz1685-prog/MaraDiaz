@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "./supabaseAdmin";
 import { toCamelCase } from "./case";
-import type { Settings, DaySchedule, Employee, Service, Course, Product } from "./types";
+import type { Settings, DaySchedule, Employee, Service, Course, Product, Registration } from "./types";
 
 async function selectAll<T>(table: string): Promise<T[]> {
   const { data, error } = await supabaseAdmin.from(table).select("*");
@@ -23,4 +23,10 @@ export async function getSchedule(): Promise<DaySchedule[]> {
   const { data, error } = await supabaseAdmin.from("schedule").select("*").order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []).map((row) => toCamelCase(row)) as DaySchedule[];
+}
+
+export async function getRegistrationByCode(code: string): Promise<Registration | null> {
+  const { data, error } = await supabaseAdmin.from("registrations").select("*").eq("access_code", code).single();
+  if (error || !data) return null;
+  return toCamelCase(data) as unknown as Registration;
 }
