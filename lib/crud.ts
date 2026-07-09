@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "./supabaseAdmin";
 import { toCamelCase, toSnakeCase } from "./case";
 
+// Los <select> HTML no tienen forma de representar "sin valor" salvo "" —
+// para columnas de clave foránea (uuid nullable) eso rompe el insert/update,
+// así que "" se traduce a null solo en campos *_id.
+function nullifyEmptyForeignKeys(row: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(row)) {
+    out[key] = key.endsWith("_id") && value === "" ? null : value;
+  }
+  return out;
+}
+
 export function createCrudHandlers(table: string) {
   async function GET() {
     const { data, error } = await supabaseAdmin.from(table).select("*");
@@ -14,7 +25,7 @@ export function createCrudHandlers(table: string) {
     const { id: _ignored, ...rest } = body;
     const { data, error } = await supabaseAdmin
       .from(table)
-      .insert(toSnakeCase(rest))
+      .insert(nullifyEmptyForeignKeys(toSnakeCase(rest)))
       .select()
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -29,7 +40,7 @@ export function createCrudHandlers(table: string) {
     const { id, ...rest } = body;
     const { data, error } = await supabaseAdmin
       .from(table)
-      .update(toSnakeCase(rest))
+      .update(nullifyEmptyForeignKeys(toSnakeCase(rest)))
       .eq("id", id)
       .select()
       .single();

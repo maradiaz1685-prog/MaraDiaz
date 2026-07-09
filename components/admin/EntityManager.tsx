@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type FieldType = "text" | "textarea" | "number" | "date" | "checkbox" | "select" | "image";
+export type FieldType = "text" | "textarea" | "number" | "date" | "time" | "checkbox" | "select" | "image";
 
 export type FieldConfig = {
   key: string;
@@ -10,6 +10,7 @@ export type FieldConfig = {
   type: FieldType;
   options?: { value: string; label: string }[];
   showInTable?: boolean;
+  helperText?: (item: Record<string, unknown>) => string;
 };
 
 type Item = Record<string, unknown> & { id: string };
@@ -79,11 +80,13 @@ export default function EntityManager({
   title,
   fields,
   emptyItem,
+  dynamicOptions,
 }: {
   apiPath: string;
   title: string;
   fields: FieldConfig[];
   emptyItem: Record<string, unknown>;
+  dynamicOptions?: Record<string, { value: string; label: string }[]>;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
@@ -185,20 +188,27 @@ export default function EntityManager({
                   Activo
                 </label>
               ) : f.type === "select" ? (
-                <select
-                  value={(editing[f.key] as string) ?? ""}
-                  onChange={(e) => updateField(f.key, e.target.value)}
-                  className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
-                >
-                  {f.options?.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
+                <>
+                  <select
+                    value={(editing[f.key] as string) ?? ""}
+                    onChange={(e) => updateField(f.key, e.target.value)}
+                    className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                  >
+                    {(dynamicOptions?.[f.key] ?? f.options ?? []).map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                  {f.helperText && (
+                    <p className="text-xs text-ink-soft mt-1.5">{f.helperText(editing)}</p>
+                  )}
+                </>
               ) : (
                 <input
-                  type={f.type === "number" ? "number" : f.type === "date" ? "date" : "text"}
+                  type={
+                    f.type === "number" ? "number" : f.type === "date" ? "date" : f.type === "time" ? "time" : "text"
+                  }
                   value={(editing[f.key] as string | number) ?? ""}
                   onChange={(e) =>
                     updateField(f.key, f.type === "number" ? Number(e.target.value) : e.target.value)
@@ -248,15 +258,22 @@ export default function EntityManager({
             <tbody className="divide-y divide-brand-100">
               {items.map((item) => (
                 <tr key={item.id} className="hover:bg-brand-50/40">
-                  {tableFields.map((f) => (
-                    <td key={f.key} className="px-4 py-3 text-ink">
-                      {f.type === "checkbox"
-                        ? item[f.key]
-                          ? "Sí"
-                          : "No"
-                        : String(item[f.key] ?? "")}
-                    </td>
-                  ))}
+                  {tableFields.map((f) => {
+                    let display: string;
+                    if (f.type === "checkbox") {
+                      display = item[f.key] ? "Sí" : "No";
+                    } else if (f.type === "select") {
+                      const opts = dynamicOptions?.[f.key] ?? f.options ?? [];
+                      display = opts.find((o) => o.value === item[f.key])?.label ?? String(item[f.key] ?? "");
+                    } else {
+                      display = String(item[f.key] ?? "");
+                    }
+                    return (
+                      <td key={f.key} className="px-4 py-3 text-ink">
+                        {display}
+                      </td>
+                    );
+                  })}
                   <td className="px-4 py-3 text-right whitespace-nowrap">
                     <button
                       onClick={() => openEdit(item)}

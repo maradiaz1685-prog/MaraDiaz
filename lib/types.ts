@@ -21,6 +21,10 @@ export type Employee = {
   role: string;
   bio: string;
   photoUrl: string;
+  category: string;
+  phone: string;
+  address: string;
+  licenseNumber: string;
 };
 
 export type Service = {
@@ -31,6 +35,20 @@ export type Service = {
   durationMin: number;
   imageUrl: string;
   active: boolean;
+  employeeId: string | null;
+  scheduleStart: string | null;
+  scheduleEnd: string | null;
+  slotDurationMin: number | null;
+};
+
+export type Booking = {
+  id: string;
+  serviceId: string;
+  bookingDate: string;
+  timeSlot: string;
+  clientName: string;
+  clientPhone: string;
+  createdAt: string;
 };
 
 export type CourseType = "curso" | "taller" | "capacitacion";
