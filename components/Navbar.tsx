@@ -37,24 +37,22 @@ export default function Navbar() {
         transparent ? "bg-transparent" : "bg-white/90 backdrop-blur border-b border-brand-100"
       }`}
     >
-      <nav className="mx-auto max-w-6xl px-4 sm:px-6 flex items-center justify-between h-20">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <Logo size="sm" />
-          <span
-            className={`font-display font-semibold text-lg leading-tight transition-colors ${
-              transparent ? "text-white drop-shadow" : "text-ink"
-            }`}
-          >
-            Mara Diaz
-            <span
-              className={`block text-[11px] font-sans font-normal tracking-wide uppercase transition-colors ${
-                transparent ? "text-white/85" : "text-brand-600"
-              }`}
-            >
-              Escuela Profesional de Estética
+      <nav
+        className={`mx-auto max-w-6xl px-4 sm:px-6 flex items-center h-20 ${
+          transparent ? "justify-end" : "justify-between"
+        }`}
+      >
+        {!transparent && (
+          <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+            <Logo size="sm" />
+            <span className="font-display font-semibold text-lg leading-tight text-ink">
+              Mara Diaz
+              <span className="block text-[11px] font-sans font-normal tracking-wide uppercase text-brand-600">
+                Escuela Profesional de Estética
+              </span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        )}
 
         <ul
           className={`hidden md:flex items-center gap-7 text-sm font-medium transition-colors ${

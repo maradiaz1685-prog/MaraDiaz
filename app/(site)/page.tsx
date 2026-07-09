@@ -31,7 +31,7 @@ export default async function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative -mt-20">
-        <div className="relative w-full aspect-[3/2] max-h-[85vh] overflow-hidden">
+        <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[480px] overflow-hidden">
           <Image
             src="/hero.png"
             alt="Mara Diaz — Centro de Estudios y Estética Integral"
