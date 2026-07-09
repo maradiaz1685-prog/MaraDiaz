@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Logo from "@/components/Logo";
 import { getSettings, getEmployees } from "@/lib/db";
 
@@ -29,22 +30,18 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-500 to-brand-300 text-white">
-        <div className="absolute inset-0 opacity-10 [background:radial-gradient(circle_at_20%_20%,white,transparent_35%),radial-gradient(circle_at_80%_60%,white,transparent_30%)]" />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-28 flex flex-col items-center text-center gap-6">
-          <div className="scale-150 mb-4">
-            <Logo size="lg" />
-          </div>
-          <h1 className="font-display text-4xl sm:text-6xl font-bold tracking-tight">
-            Mara Diaz
-          </h1>
-          <p className="uppercase tracking-[0.2em] text-sm sm:text-base font-medium text-brand-50/90">
-            Escuela Profesional de Estética
-          </p>
-          <p className="max-w-2xl text-brand-50/90 text-base sm:text-lg leading-relaxed">
-            {settings.bio}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
+      <section className="relative -mt-20">
+        <div className="relative w-full aspect-[3/2] max-h-[85vh] overflow-hidden">
+          <Image
+            src="/hero.png"
+            alt="Mara Diaz — Centro de Estudios y Estética Integral"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
+        <div className="bg-gradient-to-r from-brand-700 to-brand-500 py-6">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/servicios"
               className="rounded-full bg-white text-brand-700 font-semibold px-7 py-3 text-sm shadow-lg hover:bg-brand-50 transition-colors"
