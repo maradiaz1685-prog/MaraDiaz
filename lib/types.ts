@@ -82,6 +82,10 @@ export type Registration = {
   id: string;
   name: string;
   phone: string;
+  province: string;
+  city: string;
+  address: string;
+  alreadyClient: boolean;
   status: RegistrationStatus;
   discountPercent: number | null;
   appliesServicios: boolean;

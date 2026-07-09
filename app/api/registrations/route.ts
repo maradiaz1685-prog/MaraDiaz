@@ -25,9 +25,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, phone } = body;
+  const { name, phone, province, city, address, alreadyClient } = body;
 
-  if (!name || !phone) {
+  if (!name || !phone || !province || !city) {
     return NextResponse.json({ error: "Faltan datos obligatorios" }, { status: 400 });
   }
 
@@ -35,7 +35,15 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from("registrations")
-    .insert({ name, phone, access_code: accessCode })
+    .insert({
+      name,
+      phone,
+      province,
+      city,
+      address: address ?? "",
+      already_client: Boolean(alreadyClient),
+      access_code: accessCode,
+    })
     .select()
     .single();
 

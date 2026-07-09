@@ -121,6 +121,12 @@ export default function AdminRegistrosPage() {
                     </span>
                   </div>
                   <p className="text-sm text-ink-soft">{r.phone}</p>
+                  <p className="text-xs text-ink-soft mt-0.5">
+                    {r.city}, {r.province}
+                    {r.address ? ` · ${r.address}` : ""}
+                    {" · "}
+                    {r.alreadyClient ? "Ya era cliente" : "Cliente nuevo"}
+                  </p>
                   {r.status !== "pendiente" && r.discountPercent ? (
                     <p className="text-xs text-brand-600 mt-1">
                       {r.discountPercent}% de descuento en {scopeLabel(r)}
