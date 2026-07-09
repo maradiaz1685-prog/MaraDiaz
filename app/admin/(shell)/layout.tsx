@@ -2,6 +2,8 @@ import Link from "next/link";
 import Logo from "@/components/Logo";
 import LogoutButton from "@/components/admin/LogoutButton";
 
+export const dynamic = "force-dynamic";
+
 const navItems = [
   { href: "/admin", label: "Panel" },
   { href: "/admin/servicios", label: "Servicios" },

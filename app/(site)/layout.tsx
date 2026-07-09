@@ -3,6 +3,11 @@ import Footer from "@/components/Footer";
 import WhatsappButton from "@/components/WhatsappButton";
 import { getSettings, getServices, getCourses, getProducts } from "@/lib/db";
 
+// El contenido se administra desde el panel y tiene que reflejarse al
+// instante en el sitio público, sin esperar un redeploy — nunca renderizar
+// estas páginas como estáticas.
+export const dynamic = "force-dynamic";
+
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const [settings, services, courses, products] = await Promise.all([
     getSettings(),
