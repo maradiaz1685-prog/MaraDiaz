@@ -1,11 +1,12 @@
-import { getProducts, getDistributors } from "@/lib/db";
+import { getProducts, getDistributors, getSettings } from "@/lib/db";
 import ClientAccessBar from "@/components/ClientAccessBar";
 import ProductCard from "@/components/ProductCard";
+import CartProvider from "@/components/CartProvider";
 
 export const metadata = { title: "Multidistribuidora | Mara Diaz" };
 
 export default async function MultidistribuidoraPage() {
-  const [allProducts, distributors] = await Promise.all([getProducts(), getDistributors()]);
+  const [allProducts, distributors, settings] = await Promise.all([getProducts(), getDistributors(), getSettings()]);
   const products = allProducts.filter((p) => p.active);
   const categories = Array.from(new Set(products.map((p) => p.category)));
   const distributorById = new Map(distributors.map((d) => [d.id, d]));
@@ -14,6 +15,7 @@ export default async function MultidistribuidoraPage() {
   const estacion = products.filter((p) => p.productType === "estacion");
 
   return (
+    <CartProvider whatsappPhone={settings.whatsapp}>
     <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <header className="text-center max-w-2xl mx-auto mb-10">
         <p className="uppercase tracking-[0.2em] text-xs font-semibold text-brand-600 mb-3">Distribución</p>
@@ -64,5 +66,6 @@ export default async function MultidistribuidoraPage() {
         <p className="text-center text-ink-soft">Todavía no hay productos cargados.</p>
       )}
     </div>
+    </CartProvider>
   );
 }

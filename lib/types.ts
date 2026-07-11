@@ -99,6 +99,19 @@ export type Product = {
   minStockAlert: number | null;
 };
 
+export type StockRequestStatus = "pendiente" | "atendida";
+
+export type StockRequest = {
+  id: string;
+  productId: string | null;
+  productName: string;
+  clientName: string;
+  clientPhone: string;
+  message: string;
+  status: StockRequestStatus;
+  createdAt: string;
+};
+
 export function priceFromCost(cost: number, profitPercent: number): number {
   return Math.round(cost * (1 + profitPercent / 100));
 }

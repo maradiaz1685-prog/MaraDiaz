@@ -15,6 +15,7 @@ const navItems = [
   { href: "/admin/distribuidoras", label: "Distribuidoras" },
   { href: "/admin/porcentajes", label: "Porcentajes" },
   { href: "/admin/stock", label: "Stock" },
+  { href: "/admin/consultas-stock", label: "Consultas de stock" },
   { href: "/admin/empleados", label: "Empleados" },
   { href: "/admin/horarios", label: "Horarios" },
   { href: "/admin/configuracion", label: "Configuración" },
@@ -32,6 +33,11 @@ export default async function AdminShellLayout({ children }: { children: React.R
     .not("min_stock_alert", "is", null)
     .gt("min_stock_alert", 0);
   const lowStockCount = (stockRows ?? []).filter((p) => p.stock <= (p.min_stock_alert ?? 0)).length;
+
+  const { count: stockRequestsCount } = await supabaseAdmin
+    .from("stock_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pendiente");
 
   return (
     <div className="min-h-screen flex bg-brand-50/30">
@@ -59,6 +65,11 @@ export default async function AdminShellLayout({ children }: { children: React.R
               {item.href === "/admin/stock" && Boolean(lowStockCount) && (
                 <span className="rounded-full bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 leading-none">
                   {lowStockCount}
+                </span>
+              )}
+              {item.href === "/admin/consultas-stock" && Boolean(stockRequestsCount) && (
+                <span className="rounded-full bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 leading-none">
+                  {stockRequestsCount}
                 </span>
               )}
             </Link>

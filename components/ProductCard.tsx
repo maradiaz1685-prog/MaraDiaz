@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { formatPrice, discountedPrice, viewerDiscountPercent, type Product, type Distributor } from "@/lib/types";
+import { useCart } from "./CartProvider";
+import StockRequestModal from "./StockRequestModal";
 
 type Access = {
   status: "cliente" | "profesional";
@@ -11,6 +13,9 @@ type Access = {
 
 export default function ProductCard({ product, distributor }: { product: Product; distributor: Distributor | null }) {
   const [access, setAccess] = useState<Access | null>(null);
+  const [showStockModal, setShowStockModal] = useState(false);
+  const [added, setAdded] = useState(false);
+  const { addItem, whatsappPhone } = useCart();
 
   useEffect(() => {
     const raw = localStorage.getItem("md_access");
@@ -30,6 +35,16 @@ export default function ProductCard({ product, distributor }: { product: Product
   const viewerPercent = viewerDiscountPercent(access?.status ?? null, access?.discountPercent, access?.appliesProductos, product);
   const finalPrice = viewerPercent > 0 ? discountedPrice(publicPrice, viewerPercent) : publicPrice;
   const showStrikethrough = isOferta || viewerPercent > 0;
+
+  function handleAddToCart() {
+    if (product.stock <= 0) {
+      setShowStockModal(true);
+      return;
+    }
+    addItem({ productId: product.id, name: product.name, price: finalPrice, imageUrl: product.imageUrl });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  }
 
   return (
     <article className="rounded-2xl border border-brand-100 overflow-hidden bg-white hover:shadow-xl hover:shadow-brand-100/50 transition-shadow relative">
@@ -67,7 +82,7 @@ export default function ProductCard({ product, distributor }: { product: Product
           )}
         </div>
         <p className="text-sm text-ink-soft leading-relaxed mb-4">{product.description}</p>
-        <div className="flex items-center justify-end text-sm">
+        <div className="flex items-center justify-end text-sm mb-4">
           <span>
             {showStrikethrough && (
               <span className="text-ink-soft line-through mr-2">{formatPrice(product.price)}</span>
@@ -75,7 +90,24 @@ export default function ProductCard({ product, distributor }: { product: Product
             <span className="font-semibold text-brand-700">{formatPrice(finalPrice)}</span>
           </span>
         </div>
+        <button
+          onClick={handleAddToCart}
+          className={`w-full rounded-full text-sm font-medium py-2.5 transition-colors ${
+            added ? "bg-brand-100 text-brand-700" : "bg-brand-600 text-white hover:bg-brand-700"
+          }`}
+        >
+          {added ? "Agregado ✓" : "Agregar al carrito"}
+        </button>
       </div>
+
+      {showStockModal && (
+        <StockRequestModal
+          productId={product.id}
+          productName={product.name}
+          whatsappPhone={whatsappPhone}
+          onClose={() => setShowStockModal(false)}
+        />
+      )}
     </article>
   );
 }
