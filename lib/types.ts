@@ -6,6 +6,9 @@ export type Settings = {
   instagram: string;
   facebook: string;
   address: string;
+  defaultProfessionalDiscountPercent: number;
+  defaultClientDiscountPercent: number;
+  defaultOfferPercent: number;
 };
 
 export type DaySchedule = {
@@ -65,6 +68,18 @@ export type Course = {
   active: boolean;
 };
 
+export type Distributor = {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  logoUrl: string;
+  createdAt: string;
+};
+
+export type ProductType = "normal" | "estacion" | "oferta";
+
 export type Product = {
   id: string;
   name: string;
@@ -74,7 +89,39 @@ export type Product = {
   stock: number;
   imageUrl: string;
   active: boolean;
+  distributorId: string | null;
+  cost: number;
+  profitPercent: number;
+  professionalDiscountPercent: number | null;
+  clientDiscountPercent: number | null;
+  productType: ProductType;
+  offerDiscountPercent: number | null;
+  minStockAlert: number | null;
 };
+
+export function priceFromCost(cost: number, profitPercent: number): number {
+  return Math.round(cost * (1 + profitPercent / 100));
+}
+
+export function profitPercentFromPrice(cost: number, price: number): number {
+  if (!cost) return 0;
+  return Math.round(((price - cost) / cost) * 1000) / 10;
+}
+
+// Precio que ve un visitante identificado por teléfono (cliente o profesional):
+// gana el % individual asignado a mano en /admin/registros si existe; si no,
+// se usa el % default que la admin cargó en el producto según su status.
+export function viewerDiscountPercent(
+  status: "cliente" | "profesional" | null,
+  registrationDiscountPercent: number | null | undefined,
+  appliesProductos: boolean | undefined,
+  product: Pick<Product, "professionalDiscountPercent" | "clientDiscountPercent">
+): number {
+  if (!status) return 0;
+  if (appliesProductos && registrationDiscountPercent) return registrationDiscountPercent;
+  if (status === "profesional") return product.professionalDiscountPercent ?? 0;
+  return product.clientDiscountPercent ?? 0;
+}
 
 export type RegistrationStatus = "pendiente" | "cliente" | "profesional";
 

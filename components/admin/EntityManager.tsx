@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export type FieldType = "text" | "textarea" | "number" | "date" | "time" | "checkbox" | "select" | "image";
+export type FieldType = "text" | "textarea" | "number" | "date" | "time" | "checkbox" | "select" | "image" | "custom";
 
 export type FieldConfig = {
   key: string;
@@ -10,7 +10,18 @@ export type FieldConfig = {
   type: FieldType;
   options?: { value: string; label: string }[];
   showInTable?: boolean;
+  // Oculta el campo del formulario de alta/edición (sigue pudiendo mostrarse
+  // en la tabla) — útil cuando otro campo "custom" ya lo edita (ej. precio
+  // dentro del bloque costo/%ganancia/precio).
+  hideInForm?: boolean;
   helperText?: (item: Record<string, unknown>) => string;
+  // Solo para type "custom": reemplaza el input por lo que devuelva esta función.
+  // Recibe el item en edición y un setter para actualizar cualquier campo (útil
+  // para bloques donde un input recalcula otro, como costo/%ganancia/precio).
+  render?: (
+    item: Record<string, unknown>,
+    updateField: (key: string, value: unknown) => void
+  ) => React.ReactNode;
 };
 
 type Item = Record<string, unknown> & { id: string };
@@ -162,10 +173,17 @@ export default function EntityManager({
           onSubmit={handleSubmit}
           className="mb-8 rounded-2xl border border-brand-200 bg-brand-50/50 p-6 grid gap-4 sm:grid-cols-2"
         >
-          {fields.map((f) => (
-            <div key={f.key} className={f.type === "textarea" || f.type === "image" ? "sm:col-span-2" : ""}>
-              <label className="block text-xs font-medium text-ink-soft mb-1.5">{f.label}</label>
-              {f.type === "image" ? (
+          {fields.filter((f) => !f.hideInForm).map((f) => (
+            <div
+              key={f.key}
+              className={f.type === "textarea" || f.type === "image" || f.type === "custom" ? "sm:col-span-2" : ""}
+            >
+              {f.type !== "custom" && (
+                <label className="block text-xs font-medium text-ink-soft mb-1.5">{f.label}</label>
+              )}
+              {f.type === "custom" ? (
+                f.render?.(editing, updateField)
+              ) : f.type === "image" ? (
                 <ImageUploadInput
                   value={(editing[f.key] as string) ?? ""}
                   onChange={(url) => updateField(f.key, url)}

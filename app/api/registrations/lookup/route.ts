@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ found: false });
   }
 
-  const { data, error } = await supabaseAdmin.from("registrations").select("name, phone, status, discount_percent, access_code");
+  const { data, error } = await supabaseAdmin
+    .from("registrations")
+    .select("name, phone, status, discount_percent, access_code, applies_productos");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const match = (data ?? []).find((r) => {
@@ -35,5 +37,6 @@ export async function POST(req: NextRequest) {
     status: match.status,
     discountPercent: match.discount_percent,
     accessCode: match.access_code,
+    appliesProductos: match.applies_productos,
   });
 }
