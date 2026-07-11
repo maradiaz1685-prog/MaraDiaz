@@ -67,10 +67,7 @@ export default function ProductCard({ product, distributor }: { product: Product
           )}
         </div>
         <p className="text-sm text-ink-soft leading-relaxed mb-4">{product.description}</p>
-        <div className="flex items-center justify-between text-sm">
-          <span className={product.stock > 0 ? "text-brand-600" : "text-red-500"}>
-            {product.stock > 0 ? `${product.stock} en stock` : "Sin stock"}
-          </span>
+        <div className="flex items-center justify-end text-sm">
           <span>
             {showStrikethrough && (
               <span className="text-ink-soft line-through mr-2">{formatPrice(product.price)}</span>
