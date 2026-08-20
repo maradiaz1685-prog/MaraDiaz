@@ -169,10 +169,28 @@ export default function EntityManager({
       </div>
 
       {editing && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 px-4 py-8 overflow-y-auto"
+          onClick={() => setEditing(null)}
+        >
         <form
           onSubmit={handleSubmit}
-          className="mb-8 rounded-2xl border border-brand-200 bg-brand-50/50 p-6 grid gap-4 sm:grid-cols-2"
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-brand-200 p-6 sm:p-8 my-auto grid gap-4 sm:grid-cols-2"
         >
+          <div className="sm:col-span-2 flex items-center justify-between -mt-1 mb-1">
+            <h2 className="font-display text-xl font-semibold text-ink">
+              {editing.id ? "Editar" : "Agregar"}
+            </h2>
+            <button
+              type="button"
+              onClick={() => setEditing(null)}
+              aria-label="Cerrar"
+              className="text-ink-soft hover:text-ink text-xl leading-none"
+            >
+              ×
+            </button>
+          </div>
           {fields.filter((f) => !f.hideInForm).map((f) => (
             <div
               key={f.key}
@@ -254,6 +272,7 @@ export default function EntityManager({
             </button>
           </div>
         </form>
+        </div>
       )}
 
       {loading ? (

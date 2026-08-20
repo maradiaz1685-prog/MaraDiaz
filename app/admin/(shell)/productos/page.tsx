@@ -72,6 +72,92 @@ function PricingBlock({
   );
 }
 
+function DiscountColumn({
+  label,
+  percentKey,
+  price,
+  item,
+  updateField,
+}: {
+  label: string;
+  percentKey: string;
+  price: number;
+  item: Record<string, unknown>;
+  updateField: (key: string, value: unknown) => void;
+}) {
+  const percent = Number(item[percentKey]) || 0;
+  const inputClass =
+    "w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400";
+  const montoEquivalente = price > 0 ? Math.round((price * percent) / 100) : 0;
+
+  function handlePercentChange(v: number) {
+    updateField(percentKey, v);
+  }
+
+  function handleMontoChange(v: number) {
+    if (price > 0) {
+      updateField(percentKey, Math.round(((v / price) * 100 * 10)) / 10);
+    }
+  }
+
+  return (
+    <div>
+      <label className="block text-xs font-medium text-ink-soft mb-1.5">{label}</label>
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <input
+            type="number"
+            value={percent}
+            onChange={(e) => handlePercentChange(Number(e.target.value))}
+            className={inputClass}
+            placeholder="%"
+          />
+          <p className="text-[10px] text-ink-soft mt-1">Porcentaje</p>
+        </div>
+        <span className="text-xs text-ink-soft">o</span>
+        <div className="flex-1">
+          <input
+            type="number"
+            value={montoEquivalente || ""}
+            onChange={(e) => handleMontoChange(Number(e.target.value))}
+            className={inputClass}
+            placeholder="$"
+          />
+          <p className="text-[10px] text-ink-soft mt-1">Monto fijo ($)</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DiscountsBlock({
+  item,
+  updateField,
+}: {
+  item: Record<string, unknown>;
+  updateField: (key: string, value: unknown) => void;
+}) {
+  const price = Number(item.price) || 0;
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <DiscountColumn
+        label="Desc. profesionales"
+        percentKey="professionalDiscountPercent"
+        price={price}
+        item={item}
+        updateField={updateField}
+      />
+      <DiscountColumn
+        label="Desc. clientes"
+        percentKey="clientDiscountPercent"
+        price={price}
+        item={item}
+        updateField={updateField}
+      />
+    </div>
+  );
+}
+
 export default function AdminProductosPage() {
   const [distributorOptions, setDistributorOptions] = useState<{ value: string; label: string }[]>([]);
 
@@ -108,12 +194,12 @@ export default function AdminProductosPage() {
         { key: "pricing", label: "Precio", type: "custom", showInTable: false, render: (item, updateField) => <PricingBlock item={item} updateField={updateField} /> },
         { key: "price", label: "Precio", type: "number", hideInForm: true },
         {
-          key: "professionalDiscountPercent",
-          label: "% Desc. profesionales",
-          type: "number",
+          key: "discounts",
+          label: "Descuentos",
+          type: "custom",
           showInTable: false,
+          render: (item, updateField) => <DiscountsBlock item={item} updateField={updateField} />,
         },
-        { key: "clientDiscountPercent", label: "% Desc. clientes", type: "number", showInTable: false },
         { key: "productType", label: "Tipo", type: "select" },
         {
           key: "offerDiscountPercent",
