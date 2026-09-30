@@ -30,7 +30,7 @@ export default function AdminServiciosPage() {
         { key: "durationMin", label: "Duración (min)", type: "number" },
         {
           key: "employeeId",
-          label: "Empleado que lo realiza",
+          label: "Profesional que lo realiza",
           type: "select",
           showInTable: false,
           helperText: (item) => {

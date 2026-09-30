@@ -16,7 +16,7 @@ const navItems = [
   { href: "/admin/porcentajes", label: "Porcentajes" },
   { href: "/admin/stock", label: "Stock" },
   { href: "/admin/consultas-stock", label: "Consultas de stock" },
-  { href: "/admin/empleados", label: "Empleados" },
+  { href: "/admin/profesionales", label: "Profesionales" },
   { href: "/admin/horarios", label: "Horarios" },
   { href: "/admin/configuracion", label: "Configuración" },
 ];

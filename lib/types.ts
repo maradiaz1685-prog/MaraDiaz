@@ -28,6 +28,7 @@ export type Employee = {
   phone: string;
   address: string;
   licenseNumber: string;
+  portfolioImages: string[];
 };
 
 export type Service = {

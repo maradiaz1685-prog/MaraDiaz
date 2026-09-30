@@ -17,7 +17,7 @@ export default async function AdminDashboard() {
     { href: "/admin/servicios", label: "Servicios", count: services.length },
     { href: "/admin/cursos", label: "Escuela Profesional", count: courses.length },
     { href: "/admin/productos", label: "Multidistribuidora", count: products.length },
-    { href: "/admin/empleados", label: "Empleados", count: employees.length },
+    { href: "/admin/profesionales", label: "Profesionales", count: employees.length },
   ];
 
   return (
