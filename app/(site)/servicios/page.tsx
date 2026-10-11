@@ -17,7 +17,7 @@ export default async function ServiciosPage() {
           Elegí tu tratamiento y a tu profesional
         </h1>
         <p className="text-ink-soft">
-          Conocé a nuestro equipo, mirá sus trabajos y contratá directamente por WhatsApp.
+          Conocé a nuestro equipo, mirá sus trabajos y contactalas directamente por WhatsApp.
         </p>
       </header>
 

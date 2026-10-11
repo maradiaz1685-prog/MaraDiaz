@@ -22,7 +22,7 @@ export default function ProfessionalCard({
   function hireUrl() {
     return whatsappLink(
       contactPhone,
-      `Hola ${employee.name}! Vi tu perfil en la página de Mara Diaz y quiero contratarte.`
+      `Hola ${employee.name}! Vi tu perfil en la página de Mara Diaz y quiero hacerte una consulta.`
     );
   }
 
@@ -88,7 +88,7 @@ export default function ProfessionalCard({
           rel="noopener noreferrer"
           className="block text-center rounded-full bg-[#25D366] text-white text-sm font-semibold py-2.5 hover:opacity-90 transition-opacity"
         >
-          Contratar a {employee.name.split(" ")[0]} por WhatsApp
+          Contactar a {employee.name.split(" ")[0]} por WhatsApp
         </a>
       </div>
 
