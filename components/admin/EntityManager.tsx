@@ -324,16 +324,19 @@ export default function EntityManager({
                   )}
                 </>
               ) : (
-                <input
-                  type={
-                    f.type === "number" ? "number" : f.type === "date" ? "date" : f.type === "time" ? "time" : "text"
-                  }
-                  value={(editing[f.key] as string | number) ?? ""}
-                  onChange={(e) =>
-                    updateField(f.key, f.type === "number" ? Number(e.target.value) : e.target.value)
-                  }
-                  className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
-                />
+                <>
+                  <input
+                    type={
+                      f.type === "number" ? "number" : f.type === "date" ? "date" : f.type === "time" ? "time" : "text"
+                    }
+                    value={(editing[f.key] as string | number) ?? ""}
+                    onChange={(e) =>
+                      updateField(f.key, f.type === "number" ? Number(e.target.value) : e.target.value)
+                    }
+                    className="w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+                  />
+                  {f.helperText && <p className="text-xs text-ink-soft mt-1.5">{f.helperText(editing)}</p>}
+                </>
               )}
             </div>
           ))}

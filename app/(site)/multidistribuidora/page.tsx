@@ -32,7 +32,7 @@ export default async function MultidistribuidoraPage() {
           <h2 className="font-display text-2xl font-semibold text-ink mb-6">Ofertas</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ofertas.map((p) => (
-              <ProductCard key={p.id} product={p} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
+              <ProductCard key={p.id} product={p} defaultOfferPercent={settings.defaultOfferPercent ?? 0} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
             ))}
           </div>
         </section>
@@ -43,7 +43,7 @@ export default async function MultidistribuidoraPage() {
           <h2 className="font-display text-2xl font-semibold text-ink mb-6">De estación</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {estacion.map((p) => (
-              <ProductCard key={p.id} product={p} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
+              <ProductCard key={p.id} product={p} defaultOfferPercent={settings.defaultOfferPercent ?? 0} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
             ))}
           </div>
         </section>
@@ -56,7 +56,7 @@ export default async function MultidistribuidoraPage() {
             {products
               .filter((p) => p.category === cat)
               .map((p) => (
-                <ProductCard key={p.id} product={p} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
+                <ProductCard key={p.id} product={p} defaultOfferPercent={settings.defaultOfferPercent ?? 0} distributor={p.distributorId ? distributorById.get(p.distributorId) ?? null : null} />
               ))}
           </div>
         </section>

@@ -188,7 +188,7 @@ export default function AdminProductosPage() {
           label: "% Oferta",
           type: "number",
           showInTable: false,
-          helperText: () => "Solo se aplica si el Tipo de arriba es \"Oferta\".",
+          helperText: () => "Solo se aplica si el Tipo es \"Oferta\". Si lo dejás vacío o en 0, se usa el % general de ofertas (Admin → Porcentajes).",
         },
         { key: "stock", label: "Stock", type: "number" },
         { key: "minStockAlert", label: "Stock mínimo para alerta", type: "number", showInTable: false },

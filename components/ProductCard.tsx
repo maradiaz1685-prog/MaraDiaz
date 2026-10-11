@@ -11,7 +11,15 @@ type Access = {
   appliesProductos: boolean;
 };
 
-export default function ProductCard({ product, distributor }: { product: Product; distributor: Distributor | null }) {
+export default function ProductCard({
+  product,
+  distributor,
+  defaultOfferPercent,
+}: {
+  product: Product;
+  distributor: Distributor | null;
+  defaultOfferPercent: number;
+}) {
   const [access, setAccess] = useState<Access | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
   const [added, setAdded] = useState(false);
@@ -27,10 +35,11 @@ export default function ProductCard({ product, distributor }: { product: Product
     }
   }, []);
 
-  const isOferta = product.productType === "oferta" && Boolean(product.offerDiscountPercent);
+  const offerPercent = product.offerDiscountPercent || defaultOfferPercent;
+  const isOferta = product.productType === "oferta" && offerPercent > 0;
   const currency = product.currency ?? "ARS";
   const publicPrice = isOferta
-    ? discountedPrice(product.price, product.offerDiscountPercent as number, currency)
+    ? discountedPrice(product.price, offerPercent, currency)
     : product.price;
 
   const viewerPercent = viewerDiscountPercent(access?.status ?? null, access?.discountPercent, access?.appliesProductos, product);
