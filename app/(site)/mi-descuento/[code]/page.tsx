@@ -102,8 +102,8 @@ export default async function MiDescuentoPage({ params }: { params: Promise<{ co
                 <h3 className="font-display text-lg font-semibold text-ink mb-2">{p.name}</h3>
                 <p className="text-sm text-ink-soft mb-4">{p.category}</p>
                 <div className="text-right text-sm">
-                  <span className="text-ink-soft line-through mr-2">{formatPrice(p.price)}</span>
-                  <span className="font-semibold text-brand-700">{formatPrice(discountedPrice(p.price, percent))}</span>
+                  <span className="text-ink-soft line-through mr-2">{formatPrice(p.price, p.currency)}</span>
+                  <span className="font-semibold text-brand-700">{formatPrice(discountedPrice(p.price, percent, p.currency), p.currency)}</span>
                 </div>
               </article>
             ))}

@@ -1,15 +1,24 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { formatPrice, whatsappLink } from "@/lib/types";
+import { formatPrice, whatsappLink, type Currency } from "@/lib/types";
 
 export type CartItem = {
   productId: string;
   name: string;
   price: number;
+  currency: Currency;
   imageUrl: string;
   quantity: number;
 };
+
+function formatTotals(items: CartItem[]): string {
+  const byCurrency = new Map<Currency, number>();
+  for (const i of items) {
+    byCurrency.set(i.currency, (byCurrency.get(i.currency) ?? 0) + i.price * i.quantity);
+  }
+  return [...byCurrency.entries()].map(([currency, amount]) => formatPrice(amount, currency)).join(" + ");
+}
 
 type CartContextValue = {
   items: CartItem[];
@@ -18,7 +27,6 @@ type CartContextValue = {
   updateQuantity: (productId: string, quantity: number) => void;
   removeItem: (productId: string) => void;
   clear: () => void;
-  total: number;
   count: number;
 };
 
@@ -46,7 +54,8 @@ export default function CartProvider({
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
-        setItems(JSON.parse(raw));
+        const stored = JSON.parse(raw) as CartItem[];
+        setItems(stored.map((i) => ({ ...i, currency: i.currency ?? "ARS" })));
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }
@@ -85,11 +94,10 @@ export default function CartProvider({
     setItems([]);
   }
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const count = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, whatsappPhone, addItem, updateQuantity, removeItem, clear, total, count }}>
+    <CartContext.Provider value={{ items, whatsappPhone, addItem, updateQuantity, removeItem, clear, count }}>
       {children}
       <CartWidget />
     </CartContext.Provider>
@@ -97,16 +105,16 @@ export default function CartProvider({
 }
 
 function CartWidget() {
-  const { items, whatsappPhone, updateQuantity, removeItem, clear, total, count } = useCart();
+  const { items, whatsappPhone, updateQuantity, removeItem, clear, count } = useCart();
   const [open, setOpen] = useState(false);
 
   function handleSendOrder() {
     const lines = [
       "Hola! Quiero hacer un pedido de Multidistribuidora:",
       "",
-      ...items.map((i) => `- ${i.quantity}x ${i.name} — ${formatPrice(i.price * i.quantity)}`),
+      ...items.map((i) => `- ${i.quantity}x ${i.name} — ${formatPrice(i.price * i.quantity, i.currency)}`),
       "",
-      `Total: ${formatPrice(total)}`,
+      `Total: ${formatTotals(items)}`,
     ];
     window.open(whatsappLink(whatsappPhone, lines.join("\n")), "_blank", "noopener,noreferrer");
     clear();
@@ -169,7 +177,7 @@ function CartWidget() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-ink truncate">{item.name}</p>
-                        <p className="text-xs text-ink-soft">{formatPrice(item.price)} c/u</p>
+                        <p className="text-xs text-ink-soft">{formatPrice(item.price, item.currency)} c/u</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -199,7 +207,7 @@ function CartWidget() {
 
                 <div className="flex items-center justify-between mb-5 pt-4 border-t border-brand-100">
                   <span className="text-sm font-medium text-ink-soft">Total</span>
-                  <span className="font-display text-lg font-bold text-brand-700">{formatPrice(total)}</span>
+                  <span className="font-display text-lg font-bold text-brand-700">{formatTotals(items)}</span>
                 </div>
 
                 <div className="flex flex-col gap-2">

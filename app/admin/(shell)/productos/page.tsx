@@ -2,72 +2,41 @@
 
 import { useEffect, useState } from "react";
 import EntityManager from "@/components/admin/EntityManager";
-import { priceFromCost, profitPercentFromPrice } from "@/lib/types";
+import { formatPrice, type Currency } from "@/lib/types";
 
-function PricingBlock({
+function PriceBlock({
   item,
   updateField,
 }: {
   item: Record<string, unknown>;
   updateField: (key: string, value: unknown) => void;
 }) {
-  const cost = Number(item.cost) || 0;
-  const profitPercent = Number(item.profitPercent) || 0;
-  const price = Number(item.price) || 0;
-
-  function handleCostChange(v: number) {
-    updateField("cost", v);
-    updateField("price", priceFromCost(v, profitPercent));
-  }
-  function handleProfitChange(v: number) {
-    updateField("profitPercent", v);
-    updateField("price", priceFromCost(cost, v));
-  }
-  function handlePriceChange(v: number) {
-    updateField("price", v);
-    updateField("profitPercent", profitPercentFromPrice(cost, v));
-  }
-
+  const currency = (item.currency as Currency) ?? "ARS";
   const inputClass =
     "w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400";
-  const labelClass = "block text-xs font-medium text-ink-soft mb-1.5";
 
   return (
     <div className="rounded-xl border border-brand-200 bg-white p-4">
-      <p className="text-xs font-semibold text-ink mb-3">Precio</p>
-      <div className="grid grid-cols-3 gap-3">
-        <div>
-          <label className={labelClass}>Costo (compra)</label>
-          <input
-            type="number"
-            value={cost}
-            onChange={(e) => handleCostChange(Number(e.target.value))}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label className={labelClass}>% Ganancia</label>
-          <input
-            type="number"
-            value={profitPercent}
-            onChange={(e) => handleProfitChange(Number(e.target.value))}
-            className={inputClass}
-          />
-        </div>
-        <div>
-          <label className={labelClass}>Precio final</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => handlePriceChange(Number(e.target.value))}
-            className={inputClass}
-          />
-        </div>
+      <p className="text-xs font-semibold text-ink mb-3">Precio de venta</p>
+      <div className="grid grid-cols-[1fr_auto] gap-3">
+        <input
+          type="number"
+          min={0}
+          step="any"
+          value={Number(item.price) || ""}
+          onChange={(e) => updateField("price", Number(e.target.value))}
+          className={inputClass}
+          placeholder="Monto"
+        />
+        <select
+          value={currency}
+          onChange={(e) => updateField("currency", e.target.value)}
+          className="rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+        >
+          <option value="ARS">Pesos ($)</option>
+          <option value="USD">Dólares (US$)</option>
+        </select>
       </div>
-      <p className="text-xs text-ink-soft mt-2">
-        Poné costo + % de ganancia y el precio final se calcula solo. O escribí el precio final directamente y el %
-        de ganancia se ajusta.
-      </p>
     </div>
   );
 }
@@ -76,19 +45,21 @@ function DiscountColumn({
   label,
   percentKey,
   price,
+  currency,
   item,
   updateField,
 }: {
   label: string;
   percentKey: string;
   price: number;
+  currency: Currency;
   item: Record<string, unknown>;
   updateField: (key: string, value: unknown) => void;
 }) {
   const percent = Number(item[percentKey]) || 0;
   const inputClass =
     "w-full rounded-lg border border-brand-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400";
-  const montoEquivalente = price > 0 ? Math.round((price * percent) / 100) : 0;
+  const montoEquivalente = price > 0 ? Math.round(((price * percent) / 100) * 100) / 100 : 0;
 
   function handlePercentChange(v: number) {
     updateField(percentKey, v);
@@ -123,7 +94,7 @@ function DiscountColumn({
             className={inputClass}
             placeholder="$"
           />
-          <p className="text-[10px] text-ink-soft mt-1">Monto fijo ($)</p>
+          <p className="text-[10px] text-ink-soft mt-1">Monto fijo ({currency === "USD" ? "US$" : "$"})</p>
         </div>
       </div>
     </div>
@@ -138,19 +109,22 @@ function DiscountsBlock({
   updateField: (key: string, value: unknown) => void;
 }) {
   const price = Number(item.price) || 0;
+  const currency = (item.currency as Currency) ?? "ARS";
   return (
     <div className="grid grid-cols-2 gap-4">
       <DiscountColumn
-        label="Desc. profesionales"
+        label="Descuento a profesionales"
         percentKey="professionalDiscountPercent"
         price={price}
+        currency={currency}
         item={item}
         updateField={updateField}
       />
       <DiscountColumn
-        label="Desc. clientes"
+        label="Descuento a clientes"
         percentKey="clientDiscountPercent"
         price={price}
+        currency={currency}
         item={item}
         updateField={updateField}
       />
@@ -186,13 +160,20 @@ export default function AdminProductosPage() {
           { value: "oferta", label: "Oferta" },
         ],
       }}
+      searchKeys={["name", "category", "description", "distributorId"]}
       fields={[
         { key: "name", label: "Nombre", type: "text" },
         { key: "description", label: "Descripción", type: "textarea", showInTable: false },
         { key: "category", label: "Categoría", type: "text" },
         { key: "distributorId", label: "Distribuidora / Laboratorio", type: "select", showInTable: false },
-        { key: "pricing", label: "Precio", type: "custom", showInTable: false, render: (item, updateField) => <PricingBlock item={item} updateField={updateField} /> },
-        { key: "price", label: "Precio", type: "number", hideInForm: true },
+        { key: "pricing", label: "Precio", type: "custom", showInTable: false, render: (item, updateField) => <PriceBlock item={item} updateField={updateField} /> },
+        {
+          key: "price",
+          label: "Precio",
+          type: "number",
+          hideInForm: true,
+          format: (item) => formatPrice(Number(item.price) || 0, (item.currency as Currency) ?? "ARS"),
+        },
         {
           key: "discounts",
           label: "Descuentos",
@@ -219,8 +200,7 @@ export default function AdminProductosPage() {
         category: "",
         distributorId: "",
         price: 0,
-        cost: 0,
-        profitPercent: 0,
+        currency: "ARS",
         professionalDiscountPercent: 0,
         clientDiscountPercent: 0,
         productType: "normal",

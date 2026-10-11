@@ -81,6 +81,8 @@ export type Distributor = {
 
 export type ProductType = "normal" | "estacion" | "oferta";
 
+export type Currency = "ARS" | "USD";
+
 export type Product = {
   id: string;
   name: string;
@@ -91,8 +93,7 @@ export type Product = {
   imageUrl: string;
   active: boolean;
   distributorId: string | null;
-  cost: number;
-  profitPercent: number;
+  currency: Currency;
   professionalDiscountPercent: number | null;
   clientDiscountPercent: number | null;
   productType: ProductType;
@@ -112,15 +113,6 @@ export type StockRequest = {
   status: StockRequestStatus;
   createdAt: string;
 };
-
-export function priceFromCost(cost: number, profitPercent: number): number {
-  return Math.round(cost * (1 + profitPercent / 100));
-}
-
-export function profitPercentFromPrice(cost: number, price: number): number {
-  if (!cost) return 0;
-  return Math.round(((price - cost) / cost) * 1000) / 10;
-}
 
 // Precio que ve un visitante identificado por teléfono (cliente o profesional):
 // gana el % individual asignado a mano en /admin/registros si existe; si no,
@@ -156,15 +148,16 @@ export type Registration = {
   createdAt: string;
 };
 
-export function discountedPrice(price: number, percent: number): number {
-  return Math.round(price * (1 - percent / 100));
+export function discountedPrice(price: number, percent: number, currency: Currency = "ARS"): number {
+  const value = price * (1 - percent / 100);
+  return currency === "USD" ? Math.round(value * 100) / 100 : Math.round(value);
 }
 
-export function formatPrice(price: number): string {
+export function formatPrice(price: number, currency: Currency = "ARS"): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
+    currency,
+    maximumFractionDigits: currency === "USD" ? 2 : 0,
   }).format(price);
 }
 

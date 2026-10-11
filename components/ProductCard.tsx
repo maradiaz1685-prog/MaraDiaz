@@ -28,12 +28,13 @@ export default function ProductCard({ product, distributor }: { product: Product
   }, []);
 
   const isOferta = product.productType === "oferta" && Boolean(product.offerDiscountPercent);
+  const currency = product.currency ?? "ARS";
   const publicPrice = isOferta
-    ? discountedPrice(product.price, product.offerDiscountPercent as number)
+    ? discountedPrice(product.price, product.offerDiscountPercent as number, currency)
     : product.price;
 
   const viewerPercent = viewerDiscountPercent(access?.status ?? null, access?.discountPercent, access?.appliesProductos, product);
-  const finalPrice = viewerPercent > 0 ? discountedPrice(publicPrice, viewerPercent) : publicPrice;
+  const finalPrice = viewerPercent > 0 ? discountedPrice(publicPrice, viewerPercent, currency) : publicPrice;
   const showStrikethrough = isOferta || viewerPercent > 0;
 
   function handleAddToCart() {
@@ -41,7 +42,7 @@ export default function ProductCard({ product, distributor }: { product: Product
       setShowStockModal(true);
       return;
     }
-    addItem({ productId: product.id, name: product.name, price: finalPrice, imageUrl: product.imageUrl });
+    addItem({ productId: product.id, name: product.name, price: finalPrice, currency, imageUrl: product.imageUrl });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   }
@@ -85,9 +86,9 @@ export default function ProductCard({ product, distributor }: { product: Product
         <div className="flex items-center justify-end text-sm mb-4">
           <span>
             {showStrikethrough && (
-              <span className="text-ink-soft line-through mr-2">{formatPrice(product.price)}</span>
+              <span className="text-ink-soft line-through mr-2">{formatPrice(product.price, currency)}</span>
             )}
-            <span className="font-semibold text-brand-700">{formatPrice(finalPrice)}</span>
+            <span className="font-semibold text-brand-700">{formatPrice(finalPrice, currency)}</span>
           </span>
         </div>
         <button

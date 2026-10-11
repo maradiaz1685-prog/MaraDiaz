@@ -14,6 +14,8 @@ export type FieldConfig = {
   // en la tabla) — útil cuando otro campo "custom" ya lo edita (ej. precio
   // dentro del bloque costo/%ganancia/precio).
   hideInForm?: boolean;
+  // Cómo se muestra el valor en la tabla (ej. precio con su moneda).
+  format?: (item: Record<string, unknown>) => string;
   helperText?: (item: Record<string, unknown>) => string;
   // Solo para type "custom": reemplaza el input por lo que devuelva esta función.
   // Recibe el item en edición y un setter para actualizar cualquier campo (útil
@@ -92,14 +94,18 @@ export default function EntityManager({
   fields,
   emptyItem,
   dynamicOptions,
+  searchKeys,
 }: {
   apiPath: string;
   title: string;
   fields: FieldConfig[];
   emptyItem: Record<string, unknown>;
   dynamicOptions?: Record<string, { value: string; label: string }[]>;
+  // Si se pasa, aparece un buscador arriba de la tabla que filtra por estos campos.
+  searchKeys?: string[];
 }) {
   const [items, setItems] = useState<Item[]>([]);
+  const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Item | null>(null);
   const [saving, setSaving] = useState(false);
@@ -156,6 +162,25 @@ export default function EntityManager({
 
   const tableFields = fields.filter((f) => f.showInTable !== false);
 
+  function searchText(item: Item): string {
+    return (searchKeys ?? [])
+      .map((key) => {
+        const field = fields.find((f) => f.key === key);
+        if (field?.type === "select") {
+          const opts = dynamicOptions?.[key] ?? field.options ?? [];
+          return opts.find((o) => o.value === item[key])?.label ?? "";
+        }
+        return String(item[key] ?? "");
+      })
+      .join(" ")
+      .toLowerCase();
+  }
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const visibleItems = normalizedQuery
+    ? items.filter((item) => searchText(item).includes(normalizedQuery))
+    : items;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -167,6 +192,23 @@ export default function EntityManager({
           + Agregar
         </button>
       </div>
+
+      {searchKeys && (
+        <div className="mb-4">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar por nombre, categoría o distribuidora…"
+            className="w-full rounded-full border border-brand-200 bg-white px-5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
+          />
+          {normalizedQuery && (
+            <p className="text-xs text-ink-soft mt-2 ml-1">
+              {visibleItems.length} de {items.length}
+            </p>
+          )}
+        </div>
+      )}
 
       {editing && (
         <div
@@ -279,6 +321,8 @@ export default function EntityManager({
         <p className="text-ink-soft text-sm">Cargando…</p>
       ) : items.length === 0 ? (
         <p className="text-ink-soft text-sm">No hay ítems todavía. Agregá el primero.</p>
+      ) : visibleItems.length === 0 ? (
+        <p className="text-ink-soft text-sm">No se encontró nada con esa búsqueda.</p>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-brand-100">
           <table className="w-full text-sm">
@@ -293,11 +337,13 @@ export default function EntityManager({
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-100">
-              {items.map((item) => (
+              {visibleItems.map((item) => (
                 <tr key={item.id} className="hover:bg-brand-50/40">
                   {tableFields.map((f) => {
                     let display: string;
-                    if (f.type === "checkbox") {
+                    if (f.format) {
+                      display = f.format(item);
+                    } else if (f.type === "checkbox") {
                       display = item[f.key] ? "Sí" : "No";
                     } else if (f.type === "select") {
                       const opts = dynamicOptions?.[f.key] ?? f.options ?? [];
