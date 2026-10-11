@@ -160,6 +160,7 @@ export default function AdminProductosPage() {
           { value: "oferta", label: "Oferta" },
         ],
       }}
+      groupByKey="distributorId"
       searchKeys={["name", "category", "description", "distributorId"]}
       fields={[
         { key: "name", label: "Nombre", type: "text" },

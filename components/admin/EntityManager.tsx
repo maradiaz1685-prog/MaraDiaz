@@ -95,6 +95,7 @@ export default function EntityManager({
   emptyItem,
   dynamicOptions,
   searchKeys,
+  groupByKey,
 }: {
   apiPath: string;
   title: string;
@@ -103,9 +104,12 @@ export default function EntityManager({
   dynamicOptions?: Record<string, { value: string; label: string }[]>;
   // Si se pasa, aparece un buscador arriba de la tabla que filtra por estos campos.
   searchKeys?: string[];
+  // Si se pasa, aparecen botones arriba (uno por opción de este campo select) para ver solo esos ítems.
+  groupByKey?: string;
 }) {
   const [items, setItems] = useState<Item[]>([]);
   const [query, setQuery] = useState("");
+  const [group, setGroup] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Item | null>(null);
   const [saving, setSaving] = useState(false);
@@ -124,7 +128,7 @@ export default function EntityManager({
   }, [apiPath]);
 
   function openNew() {
-    setEditing({ ...emptyItem, id: "" } as Item);
+    setEditing({ ...emptyItem, ...(groupByKey && group ? { [groupByKey]: group } : {}), id: "" } as Item);
   }
 
   function openEdit(item: Item) {
@@ -177,9 +181,18 @@ export default function EntityManager({
   }
 
   const normalizedQuery = query.trim().toLowerCase();
+  const groupOptions = groupByKey ? (dynamicOptions?.[groupByKey] ?? []) : [];
+  const groupCounts = new Map<string, number>();
+  if (groupByKey) {
+    for (const item of items) {
+      const v = String(item[groupByKey] ?? "");
+      groupCounts.set(v, (groupCounts.get(v) ?? 0) + 1);
+    }
+  }
+  const groupFiltered = groupByKey && group !== null ? items.filter((item) => String(item[groupByKey] ?? "") === group) : items;
   const visibleItems = normalizedQuery
-    ? items.filter((item) => searchText(item).includes(normalizedQuery))
-    : items;
+    ? groupFiltered.filter((item) => searchText(item).includes(normalizedQuery))
+    : groupFiltered;
 
   return (
     <div>
@@ -193,6 +206,34 @@ export default function EntityManager({
         </button>
       </div>
 
+      {groupByKey && groupOptions.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            type="button"
+            onClick={() => setGroup(null)}
+            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              group === null ? "bg-brand-600 text-white border-brand-600" : "border-brand-200 text-ink-soft hover:bg-brand-50"
+            }`}
+          >
+            Todas ({items.length})
+          </button>
+          {groupOptions
+            .filter((o) => o.value !== "" || (groupCounts.get("") ?? 0) > 0)
+            .map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => setGroup(o.value)}
+                className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                  group === o.value ? "bg-brand-600 text-white border-brand-600" : "border-brand-200 text-ink-soft hover:bg-brand-50"
+                }`}
+              >
+                {o.label} ({groupCounts.get(o.value) ?? 0})
+              </button>
+            ))}
+        </div>
+      )}
+
       {searchKeys && (
         <div className="mb-4">
           <input
@@ -202,7 +243,7 @@ export default function EntityManager({
             placeholder="Buscar por nombre, categoría o distribuidora…"
             className="w-full rounded-full border border-brand-200 bg-white px-5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
-          {normalizedQuery && (
+          {(normalizedQuery || group !== null) && (
             <p className="text-xs text-ink-soft mt-2 ml-1">
               {visibleItems.length} de {items.length}
             </p>
